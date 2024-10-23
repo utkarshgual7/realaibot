@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rudra by Machinevice</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 0 0 20px 0;
+        }
+
+        #chatbox {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            display: flex;
+            margin: 10px 0;
+        }
+
+        .botText {
+            background-color: #e1f5fe;
+            color: #0277bd;
+            padding: 10px;
+            border-radius: 5px;
+            align-self: flex-start;
+            max-width: 80%;
+        }
+
+        .userText {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 5px;
+            align-self: flex-end;
+            max-width: 80%;
+            margin-left: auto;
+        }
+
+        #userinput {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #textInput {
+            width: 75%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #buttonInput {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0277bd;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #buttonInput:hover {
+            background-color: #01579b;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chatbot App</h1>
+        <div id="chatbox">
+            <p class="botText"><span>Hi, Rudra Here </span></p>
+        </div>
+        <div id="userinput">
+            <input id="textInput" type="text" name="message" placeholder="Type your message">
+            <input id="buttonInput" type="submit" value="Send" onclick="getUserResponse()"/>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Handle Enter key for input submission
+            $('#textInput').keypress(function(event) {
+                if (event.which === 13) { // Enter key
+                    event.preventDefault(); // Prevent the default form submission
+                    getUserResponse();
+                }
+            });
+        });
+
+     
+        function getUserResponse() {
+        var userText = $('#textInput').val();
+        var userHTML = "<p class='userText'>User: <span>" + userText + "</span></p>";
+        $('#chatbox').append(userHTML);
+        $('#textInput').val("");
+
+        // Scroll to the bottom of the chatbox
+        $('#chatbox').animate({ scrollTop: $('#chatbox')[0].scrollHeight }, 1000);
+
+        // Send the user message to the server
+        $.get("/get", { userMessage: userText }).done(function(data) {
+            var result = JSON.parse(data);
+            var botHTML = "<p class='botText'>Rudra: <span>" + result.response + "</span></p>";
+            $('#chatbox').append(botHTML);
+
+            // Show action buttons if any
+            if (result.actions.length > 0) {
+                result.actions.forEach(function(action) {
+                    var actionHTML = "<button onclick=\"performAction('" + action.action + "')\">" + action.label + "</button>";
+                    $('#chatbox').append(actionHTML);
+                });
+            }
+
+            $('#chatbox').animate({ scrollTop: $('#chatbox')[0].scrollHeight }, 1000);
+        });
+    }
+
+    function performAction(action) {
+        $.get("/action", { action: action }).done(function(response) {
+            var actionHTML = "<p class='botText'>Rudra: <span>" + response + "</span></p>";
+            $('#chatbox').append(actionHTML);
+            $('#chatbox').animate({ scrollTop: $('#chatbox')[0].scrollHeight }, 1000);
+        });
+    }
+    </script>
+</body>
+</html>

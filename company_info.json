@@ -1,0 +1,13 @@
+{
+    "company": {
+        "name": "Machinevice",
+        "description":"We offer remote computer and electronic gadget repair services, troubleshooting, and maintenance. Our services cover a wide range of devices including laptops, desktops, smartphones, tablets, and other electronic gadgets.Additionally our Device Problem-Solving Forum! Here, you can quickly describe your device issues and receive hassle-free solutions from our expert community.",
+        "website": "https://www.machinevice.com",
+        "contact_email": "support@machinevice.com",
+        "social_media": {
+            "twitter": "https://twitter.com/machinevice",
+            "facebook": "https://facebook.com/machinevice",
+            "linkedin": "https://linkedin.com/company/machinevice"
+        }
+    }
+}
